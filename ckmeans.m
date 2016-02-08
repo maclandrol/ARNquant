@@ -64,7 +64,7 @@ if n ~= 1
     for c = tsize(1):-1:0
         clusterLeft = btmatrix(c+1, clusterRight+1);
         clusters{c+1} = values(clusterLeft+1:clusterRight+1);
-        cluster(ind(clusterLeft+1:clusterRight+1)) = c;
+        cluster(ind(clusterLeft+1:clusterRight+1)) = c+1;
         if c > 0
             clusterRight = clusterLeft-1;
         end

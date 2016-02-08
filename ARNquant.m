@@ -92,7 +92,7 @@ if isfield(handles, 'rna') && ~isempty(handles.rna)
           case 'classification',  result = class_algo(handles, rna);
     end
     if ~isempty(result)
-        handles.result = result;
+        handles.result = double(result);
         guidata(hObject, handles);
     end
 end
@@ -354,7 +354,7 @@ function ok_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if isfield(handles, 'result')
-    [filename, pathname] = uiputfile('intensity.txt', 'Save Intensity file');
+    [filename, pathname] = uiputfile('intensity.locx', 'Save Intensity file');
     dlmwrite(fullfile(pathname, filename), handles.result,'delimiter', '\t', '-append');
     if isfield(handles, 'maskfile') && ~isempty(handles.maskfile)
        saveimage(handles.maskfile, fullfile(pathname, 'label.eps')) 
