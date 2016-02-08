@@ -22,7 +22,7 @@ function varargout = ARNquant(varargin)
 
 % Edit the above text to modify the response to help ARNquant
 
-% Last Modified by GUIDE v2.5 06-Feb-2016 02:44:09
+% Last Modified by GUIDE v2.5 08-Feb-2016 18:25:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -833,4 +833,24 @@ function cytospot_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of cytospot
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function spotax_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to spotax (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate spotax
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function maskax_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to maskax (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate maskax
 end
