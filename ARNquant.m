@@ -22,7 +22,7 @@ function varargout = ARNquant(varargin)
 
 % Edit the above text to modify the response to help ARNquant
 
-% Last Modified by GUIDE v2.5 08-Feb-2016 18:25:52
+% Last Modified by GUIDE v2.5 08-Feb-2016 19:18:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -152,7 +152,11 @@ clustleg = {};
 for i = 1:ncluster
     cluster_uniq(i, 2) = mean(intensity(cluster == cluster_uniq(i,1))); % set mean intensity for each cluster
     clust_int_dist = intensity(cluster == cluster_uniq(i,1));
-    binranges = min(clust_int_dist):500:max(clust_int_dist)+100;
+    binsize = str2double(get(handles.binsize, 'String'));
+    if isnan(binsize)
+        binsize = 500;
+    end
+    binranges = min(clust_int_dist):binsize:max(clust_int_dist)+100;
     [bincounts] = histc(clust_int_dist,binranges);
     bar(binranges,bincounts, 'FaceColor', cc(i, :), 'EdgeColor', 'none');
     clustleg{i} = strcat(num2str(i), ' cluster');
@@ -173,9 +177,14 @@ subplot(2,1,2,'Parent', hp);
 nascents = sort(unique(rna(:,end)))';
 cc = hsv(numel(nascents));
 leg = {};
+
+binsize = str2double(get(handles.binsize, 'String'));
+if isnan(binsize)
+    binsize = 500;
+end
 for j = 1:numel(nascents)
     intensity = rna(rna(:,end) == nascents(j), 3);
-    binranges = min(intensity):500:max(intensity)+100;
+    binranges = min(intensity):binsize:max(intensity)+100;
     [bincounts] = histc(intensity,binranges);
     bh = bar(binranges,bincounts, 'FaceColor', cc(j, :), 'EdgeColor', 'none');
     leg{j} = strcat(num2str(nascents(j)), ' nascents');
@@ -312,9 +321,13 @@ hf = figure;
 nascents = sort(unique(rna(:,end)))';
 cc = hsv(numel(nascents));
 leg = {};
+binsize = str2double(get(handles.binsize, 'String'));
+if isnan(binsize)
+    binsize = 500;
+end
 for j=1:numel(nascents)
     intensity = rna(rna(:,end) == nascents(j), 3);
-    binranges = min(intensity):500:max(intensity)+100;
+    binranges = min(intensity):binsize:max(intensity)+100;
     [bincounts] = histc(intensity,binranges);
     bh = bar(binranges,bincounts, 'FaceColor', cc(j, :), 'EdgeColor', 'none');
     leg{j} = strcat(num2str(nascents(j)), ' nascents');
@@ -633,6 +646,16 @@ if ~ (isequal(filename,0) || isequal(pathname,0))
 end
 
 end
+
+function replot(handles, binsize)
+    [min_int, min_ind] = min(handles.rna(:,3));
+    [max_int, max_ind] = max(handles.rna(:,3));
+    axes(handles.spotax);
+    binranges = min_int:binsize:max_int+100;
+    [bincounts] = histc(handles.rna(:,3),binranges);
+    bar(binranges,bincounts,'w');
+end
+
 % --------------------------------------------------------------------
 function spot_Callback(hObject, eventdata, handles)
 % hObject    handle to spot (see GCBO)
@@ -649,7 +672,11 @@ if ~ (isequal(rnafile,0) || isequal(pathname,0))
     [min_int, min_ind] =min(rna(:,3));
     [max_int, max_ind] =max(rna(:,3));
     axes(handles.spotax);
-    binranges = min_int:500:max_int+100;
+    binsize = str2double(get(handles.binsize, 'String'));
+    if isnan(binsize)
+        binsize = 500;
+    end
+    binranges = min_int:binsize:max_int+100;
     [bincounts] = histc(rna(:,3),binranges);
     bar(binranges,bincounts,'w');
     
@@ -853,4 +880,35 @@ function maskax_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate maskax
+end
+
+
+
+function binsize_Callback(hObject, eventdata, handles)
+% hObject    handle to binsize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of binsize as text
+%        str2double(get(hObject,'String')) returns contents of binsize as a double
+
+binsize = str2double(get(hObject,'String'));
+if isnan(binsize)
+    binsize = 500;
+end
+replot(handles, binsize);
+guidata(hObject, handles)
+
+end
+% --- Executes during object creation, after setting all properties.
+function binsize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to binsize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 end
