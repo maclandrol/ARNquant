@@ -55,7 +55,7 @@ function ARNquant_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for ARNquant
 handles.output = hObject;
 zoom(handles.spotax, 'off')
-
+handles.bin_size = 500;
 
 
 % Update handles structure
@@ -130,7 +130,7 @@ if nclass == 0
     for i = 1:numel(test_class)
         try 
             cluster = get_cluster(intensity, ind, test_class(i));
-            sil_score(i) = mean(silhouette(intensity, cluster));
+            sil_score(i) = mean(silhouette(intensity, cluster));%, 'Euclidean'));
         catch me
             disp(me)
         end
@@ -152,7 +152,7 @@ clustleg = {};
 for i = 1:ncluster
     cluster_uniq(i, 2) = mean(intensity(cluster == cluster_uniq(i,1))); % set mean intensity for each cluster
     clust_int_dist = intensity(cluster == cluster_uniq(i,1));
-    binsize = str2double(get(handles.binsize, 'String'));
+    binsize = handles.bin_size;
     if isnan(binsize)
         binsize = 500;
     end
@@ -178,7 +178,7 @@ nascents = sort(unique(rna(:,end)))';
 cc = hsv(numel(nascents));
 leg = {};
 
-binsize = str2double(get(handles.binsize, 'String'));
+binsize = handles.bin_size;
 if isnan(binsize)
     binsize = 500;
 end
@@ -278,7 +278,7 @@ coeff = str2double(get(handles.coeff, 'String'));
 if isnan(coeff)
     coeff=1.5;
 end
-rna = intdistmean(rna, s_intent, coeff);
+rna = intdistmean(rna, s_intent, coeff, handles.bin_size);
 
 end
 
@@ -305,11 +305,11 @@ coeff = str2double(get(handles.coeff, 'String'));
 if isnan(coeff)
     coeff=1.5;
 end
-rna = intdistmean(rna, s_intent, coeff);
+rna = intdistmean(rna, s_intent, coeff, handles.bin_size);
 
 end
 
-function rna = intdistmean(rna, mean_int, coeff)
+function rna = intdistmean(rna, mean_int, coeff, binsize)
 % only nuclear spot can be set as trasncription site
 % rna : X Y intent nucleus istrans nascentnumber
 background = 0;
@@ -321,7 +321,6 @@ hf = figure;
 nascents = sort(unique(rna(:,end)))';
 cc = hsv(numel(nascents));
 leg = {};
-binsize = str2double(get(handles.binsize, 'String'));
 if isnan(binsize)
     binsize = 500;
 end
@@ -647,13 +646,21 @@ end
 
 end
 
-function replot(handles, binsize)
+function [minplot, maxplot] = replot(handles, binsize)
     [min_int, min_ind] = min(handles.rna(:,3));
     [max_int, max_ind] = max(handles.rna(:,3));
+    cla(handles.spotax);
     axes(handles.spotax);
     binranges = min_int:binsize:max_int+100;
     [bincounts] = histc(handles.rna(:,3),binranges);
     bar(binranges,bincounts,'w');
+    yl = ylim;
+    min_int = str2double(get(handles.minval, 'String'));
+    max_int = str2double(get(handles.maxval, 'String'));
+    hold on;
+    minplot = plot([min_int,min_int], yl, 'g-', 'LineWidth',1.5);
+    hold on;
+    maxplot = plot([max_int,max_int], yl, 'r-', 'LineWidth',1.5);
 end
 
 % --------------------------------------------------------------------
@@ -673,6 +680,7 @@ if ~ (isequal(rnafile,0) || isequal(pathname,0))
     [max_int, max_ind] =max(rna(:,3));
     axes(handles.spotax);
     binsize = str2double(get(handles.binsize, 'String'));
+    handles.bin_size = binsize;
     if isnan(binsize)
         binsize = 500;
     end
@@ -892,11 +900,11 @@ function binsize_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of binsize as text
 %        str2double(get(hObject,'String')) returns contents of binsize as a double
 
-binsize = str2double(get(hObject,'String'));
-if isnan(binsize)
-    binsize = 500;
+handles.bin_size = str2double(get(hObject,'String'));
+if isnan(handles.bin_size)
+    handles.bin_size = 500;
 end
-replot(handles, binsize);
+[handles.minplot, handles.maxplot] = replot(handles,handle.bin_size);
 guidata(hObject, handles)
 
 end
