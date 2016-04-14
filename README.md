@@ -38,13 +38,12 @@ You can launch the gui by running `ARNquant` in matlab.
   3. **BinSize** : use this to determine the binsize use for the intensity distribution. You should set a value that   will allow an acccurate representation of the intensity distribution of your spot. Failure to set the correct binsize could impact your analysis. [This section in the wikipedia page of Histogram](https://en.wikipedia.org/wiki/Histogram#Number_of_bins_and_width) provide some method to choose the number of bins. I recommend playing with the values if you're not sure.
   
   
-  
- #### 5. 6. 7. Single spot intensity computation
+#### 5. 6. 7. Single spot intensity computation
  
- This section let you choose the algorithm to compute the single spot intensity.
+This section let you choose the algorithm to compute the single spot intensity.
  
-   ##### Mean and Median 
-   1. **Mean** : This just use the mean intensity of all spots while excluding the spots that are outside the interval set by the user.
+##### Mean and Median 
+ 1. **Mean** : This just use the mean intensity of all spots while excluding the spots that are outside the interval set by the user.
  2. **Median** : This is similar to the previous method, but it use the median instead. In a truly normal distribution the mean and the median are the same. However, the median is more resistant to outliers than the mean, which is a one of the reason to prefer it over the mean. By using deviation around the median, it's actually  possible to remove outliers. The ``"Std from median"`` parameters in  **SECTION 7** let you choose the coefficient `k` that should be used to exclude outliers according to the following equation : 
 
 				isOutlier = abs(spotINT - median(INT)) > k*std(INT);
@@ -58,26 +57,19 @@ If you click on `Apply`, a new window with the nascents RNA distribution in your
    ![](https://i.imgur.com/bj3ERBm.png)
              
 
- 
- 
-    
 ##### Classification
 
- 3. **Classification** : select this option, if you want to use alternative methods (unsupervised data clustering in 1D) to group your spots into several clusters then use the best cluster to compute single spot intensity. For this particular problem, grouping your data into 2 or 3 classes should be adequate. If you're are not sure, use the automatic clustering, selected by default. The following methods are available  :
-     * **kmeans** is a clustering algorithm that group a given data set into k fixed clusters (a priori). It's a two-phase iterative  algorithm that minimize the sum of point-to-centroid distances, summed over all k clusters. It often falls in local minima and is not really suited for 1D clustering.
-     * **ckmeans** is a dynamic programming algorithm for optimal one-dimensional kmeans clustering that minimizes the sum of squares of within cluster
-distances. As an alternative to the standard heuristic kmeans algorithm, this algorithm guarantees optimality and repeatability [4].
-     * **Gaussian mixture model**. This approach fit a Gaussian mixture models (GMM) to the data and then assign each spot to the multivariate normal components that maximise the posterior probability, given the data.         
-     * **KDE ( not implemented ).** This approach use kernel density estimation and split the data at the local minima of the density. It's however difficult to specify a number of cluster here.
+  Select this option, if you want to use alternative methods (unsupervised data clustering in 1D) to group your spots into several clusters then use the best cluster to compute single spot intensity. For this particular problem, grouping your data into 2 or 3 classes should be adequate. If you're are not sure, use the automatic clustering, selected by default. The following methods are available  :
+  * **kmeans** is a clustering algorithm that group a given data set into k fixed clusters (a priori). It's a two-phase iterative  algorithm that minimize the sum of point-to-centroid distances, summed over all k clusters. It often falls in local minima and is not really suited for 1D clustering.
+  * **ckmeans** is a dynamic programming algorithm for optimal one-dimensional kmeans clustering that minimizes the sum of squares of within cluster distances. As an alternative to the standard heuristic kmeans algorithm, this algorithm guarantees optimality and repeatability [4].
+  * **Gaussian mixture model**. This approach fit a Gaussian mixture models (GMM) to the data and then assign each spot to the multivariate normal components that maximise the posterior probability, given the data.
+  * **KDE ( not implemented ).** This approach use kernel density estimation and split the data at the local minima of the density. It's however difficult to specify a number of cluster here.
 
 **I recommend using ckmeans or in extreme case, the gaussian mixture model.**
  
 If you click on `Apply`, the window shown here will be a little different. The upper subplot will show the different clusters and the intensity distribution inside those clusters, while the lower subplot is similar to the previous figure (intensity distribution when mean or median is used). ARNquant try to guess the best cluster to use in order to compute the single spot intensity. However there is an option at the bottom of the figure that enable correction if the wrong cluster has been chosen. Click `ok` when you're done.
 
-![](https://i.imgur.com/g73zoxf.jpg)
-
-  
-
+![classification window](https://i.imgur.com/g73zoxf.jpg)
 
 ## See also
 
