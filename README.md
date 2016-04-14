@@ -19,7 +19,7 @@ You can launch the gui by running `ARNquant` in matlab.
 ![main windows](http://i.imgur.com/xAEqnh8.png)
 
 #### 1. Nucleus segmentation mask
-  Load your segmentation mask with the `Load mask` button and it will show in this panel.
+  Load your segmentation mask with the `Load mask` button and it will show in this panel. You can zoom in and out by using the tools provided (**section 8** on the image)
 
 
 #### 2. **Spots intensity distribution**
@@ -44,7 +44,7 @@ This section let you choose the algorithm to compute the single spot intensity.
  
 ##### Mean and Median 
  1. **Mean** : This just use the mean intensity of all spots while excluding the spots that are outside the interval set by the user.
- 2. **Median** : This is similar to the previous method, but it use the median instead. In a truly normal distribution the mean and the median are the same. However, the median is more resistant to outliers than the mean, which is a one of the reason to prefer it over the mean. By using deviation around the median, it's actually  possible to remove outliers. The ``"Std from median"`` parameters in  **SECTION 7** let you choose the coefficient `k` that should be used to exclude outliers according to the following equation : 
+ 2. **Median** : This is similar to the previous method, but it use the median instead. In a truly normal distribution the mean and the median are the same. However, the median is more resistant to outliers than the mean, which is a one of the reason to prefer it over the mean. By using deviation around the median, it's actually  possible to remove outliers. The ``"Std from median"`` parameters in  **section 7** let you choose the coefficient `k` that should be used to exclude outliers according to the following equation : 
 
 				isOutlier = abs(spotINT - median(INT)) > k*std(INT);
          
